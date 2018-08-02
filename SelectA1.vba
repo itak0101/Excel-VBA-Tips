@@ -1,5 +1,5 @@
 '---------------------------------------------------------------------------
-' 全てのシートでA1セルにカーソルを合わせる
+' 全シートでA1セルにカーソルを合わせる
 '---------------------------------------------------------------------------
 Sub SelectA1()
     ' 宣言と初期化
@@ -8,7 +8,7 @@ Sub SelectA1()
     ' 全シートループ
     For i = 1 To Worksheets.Count
         Set TargetSheet = Worksheets(i) ' 処理対象シートを1つ取得
-        TargetSheet.Activate            ' 処理対象シートを開く
+        TargetSheet.Activate            ' 処理対象シートを洗濯する
         TargetSheet.Range("A1").Select  ' 処理対象シートのA1セルを選択する
     Next i
     
