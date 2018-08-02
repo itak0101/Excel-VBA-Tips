@@ -19,7 +19,7 @@ Sub ExportGraphInfo()
         For j = 1 To TargetSheet.Shapes.Count
             Set TargetShape = TargetSheet.Shapes(j)
             
-            '[分岐A] オブジェクトがグラフの場合
+            '[分岐] オブジェクトがグラフの場合
             If InStr(TargetShape.Name, "Chart") Or InStr(TargetShape.Name, "Graph") Then
                 Set TargetChart = TargetSheet.Shapes(j).Chart
                 
@@ -28,10 +28,10 @@ Sub ExportGraphInfo()
                 For k = 1 To TargetChart.SeriesCollection.Count
                     Set TargetCollection = TargetChart.SeriesCollection(k)
                     
-                    '出力(改行のみ)
+                    '出力(改行を出力)
                     Print #1, ""
                     
-                    '出力(数式以外の部分、改行なし)
+                    '出力(数式以外の部分を改行なしで出力)
                     Print #1, _
                         TargetSheet.Name _
                         & ",""" & TargetShape.Name & """" _
@@ -41,12 +41,12 @@ Sub ExportGraphInfo()
                         & ",""" & TargetChart.Name & """" _
                         & ",""" & TargetCollection.Name & """";
                     
-                    '出力(数式部分、改行なし)
+                    '出力(数式部分を改行なしで出力)
                     Print #1, ",""" & Replace(TargetCollection.Formula, " = ", "") & """";
                         
                 Next k '[Loop] グラフ内の全系列
                 
-            End If '[分岐A] オブジェクトがグラフの場合
+            End If '[分岐] オブジェクトがグラフの場合
             
         Next j '[Loop] シート内の全オブジェクト
         
