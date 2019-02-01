@@ -1,6 +1,4 @@
-'---------------------------------------------------------------------------
-' 選択範囲を画像ファイルとして出力する
-'---------------------------------------------------------------------------
+' 選択範囲をPNG画像として保存する
 Sub OutputRange()
     
     ' 例外処理
@@ -13,16 +11,16 @@ Sub OutputRange()
     Range("A1:D4").CopyPicture Appearance:=xlScreen, Format:=xlBitmap
     ActiveSheet.Paste
     
-    ' TEMPフォルダに選択範囲を出力(HTML形式)
-    With ActiveWorkbook.PublishObjects.Add(xlSourceSheet, _
-        Environ("TEMP") + "\img_get.htm", ActiveSheet.Name, "", xlHtmlStatic, "img", "")
+    ' 選択範囲を1次出力
+    With ActiveWorkbook.PublishObjects _
+        .Add(xlSourceSheet, ActiveWorkbook.Path + "\images\image.htm", ActiveSheet.Name, "", xlHtmlStatic, "AAA", "")
         .Publish (True)
         .AutoRepublish = False
     End With
 
-    ' TEMPフォルダから画像をコピー
+    ' 1次出力フォルダからコピー
     FileCopy _
-        Source:=Environ("TEMP") + "\img_get.files\img_image001.png", _
+        Source:=ActiveWorkbook.Path + "\images\image.files\AAA_image001.png", _
         Destination:=ActiveWorkbook.Path + "\" + ActiveSheet.Name + ".png"
 
     ' シートに貼り付けた画像を削除
@@ -39,4 +37,3 @@ Catch:
     Application.DisplayAlerts = True
 
 End Sub
-'---------------------------------------------------------------------------
