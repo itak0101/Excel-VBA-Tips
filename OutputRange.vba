@@ -1,29 +1,79 @@
-' 選択範囲をPNG画像として保存する
-Sub OutputRange()
+'---------------------------------------------------------------------------
+' 指定範囲を画像ファイルとして出力する (全シート)
+'---------------------------------------------------------------------------
+Sub OutputRangeAllSheet()
+    
+    ' ファイル操作系クラスを定義
+    Dim FSO As Object
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    
+    ' 出力フォルダの作成 (既に存在している場合は一度削除してから新規作成)
+    sOutputFolderPath = ActiveWorkbook.Path + "\OutputRange"
+    If FSO.FolderExists(sOutputFolderPath) Then
+        FSO.DeleteFolder (sOutputFolderPath)
+    End If
+    FSO.CreateFolder (sOutputFolderPath)
+    
+    ' 全シートループ
+    For i = 1 To Worksheets.Count
+    
+        ' 対象シート情報の取得
+        Set TargetSheet = Worksheets(i) ' 処理対象シートを1つ取得
+        sSheetName = TargetSheet.Name   ' 処理対象シート名を取得する
+        TargetSheet.Activate            ' 処理対象シートを選択する
+        
+        ' 対象に処理実施
+        Call OutputRange(sSheetName, "A1:D4")
+        
+    Next i
+    
+    ' 画像出力時の中間ファイルを削除
+    FSO.DeleteFolder (sOutputFolderPath + "\image.files")
+    FSO.DeleteFile (sOutputFolderPath + "\image.htm")
+    
+    ' 最後に1シート目を開いてから終了することで、次回起動時に1シート目が表示されるようにする
+    Worksheets(1).Activate
+    
+End Sub
+
+
+'---------------------------------------------------------------------------
+'  指定範囲を画像ファイルとして出力する (対象シート)
+'---------------------------------------------------------------------------
+Sub OutputRange(ByVal sSheetName As String, ByVal sRange As String)
     
     ' 例外処理
     On Error GoTo Catch
     
+    ' 処理対象シートをアクティブにする
+    Worksheets(sSheetName).Activate
+    
+    ' 出力先フォルダが存在しなければエラー終了
+    sOutputFolderPath = ActiveWorkbook.Path + "\OutputRange"
+    If Dir(sOutputFolderPath, vbDirectory) = "" Then
+        Err.Raise Number:=999, Description:="画像出力フォルダが存在しません。事前に作成してください。" & vbNewLine & sOutputFolderPath
+    End If
+    
     ' 警告メッセージボックスを非表示に設定
     Application.DisplayAlerts = False
-    
-    ' 選択範囲を画像として一度貼り付ける
-    Range("A1:D4").CopyPicture Appearance:=xlScreen, Format:=xlBitmap
+        
+    ' 選択範囲を画像としてExcel上に貼り付ける
+    Range(sRange).CopyPicture Appearance:=xlScreen, Format:=xlBitmap
     ActiveSheet.Paste
     
-    ' 選択範囲を1次出力
+    ' Excel上に貼り付けた画像をファイル出力(1次出力)
     With ActiveWorkbook.PublishObjects _
-        .Add(xlSourceSheet, ActiveWorkbook.Path + "\images\image.htm", ActiveSheet.Name, "", xlHtmlStatic, "AAA", "")
+        .Add(xlSourceSheet, sOutputFolderPath + "\image.htm", ActiveSheet.Name, "", xlHtmlStatic, "AAA", "")
         .Publish (True)
         .AutoRepublish = False
     End With
 
-    ' 1次出力フォルダからコピー
+    ' 1次出力先フォルダから、最終出力先にファイルをコピー
     FileCopy _
-        Source:=ActiveWorkbook.Path + "\images\image.files\AAA_image001.png", _
-        Destination:=ActiveWorkbook.Path + "\" + ActiveSheet.Name + ".png"
+        Source:=sOutputFolderPath + "\image.files\AAA_image001.png", _
+        Destination:=sOutputFolderPath + "\" + ActiveSheet.Name + ".png"
 
-    ' シートに貼り付けた画像を削除
+    ' Excel上に貼り付けた画像を削除
     Selection.Delete
     
     ' 警告メッセージボックスを表示に設定
@@ -33,7 +83,13 @@ Sub OutputRange()
 
 ' 例外処理
 Catch:
-    MsgBox "例外が発生しました"
+    MsgBox (Err.Description)
     Application.DisplayAlerts = True
 
 End Sub
+
+
+'---------------------------------------------------------------------------
+
+
+
