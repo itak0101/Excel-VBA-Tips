@@ -8,11 +8,11 @@ Sub SelectA1()
     ' 全シートループ
     For i = 1 To Worksheets.Count
         Set TargetSheet = Worksheets(i) ' 処理対象シートを1つ取得
-        TargetSheet.Activate            ' 処理対象シートを洗濯する
+        TargetSheet.Activate            ' 処理対象シートを選択する
         TargetSheet.Range("A1").Select  ' 処理対象シートのA1セルを選択する
     Next i
     
-    ' 最後に1シート目を開き、次回起動時に1シート目が表示されるようにする
+    ' 最後に1シート目を表示して終わり
     Worksheets(1).Activate
 End Sub
 '---------------------------------------------------------------------------
