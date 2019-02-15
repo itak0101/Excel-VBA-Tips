@@ -1,14 +1,14 @@
 '---------------------------------------------------------------------------
 ' 指定範囲を画像ファイルとして出力する (全シート)
 '---------------------------------------------------------------------------
-Sub OutputRangeAllSheet()
+Sub ExportRangeAllSheet()
     
     ' ファイル操作系クラスを定義
     Dim FSO As Object
     Set FSO = CreateObject("Scripting.FileSystemObject")
     
     ' 出力フォルダの作成 (既に存在している場合は一度削除してから新規作成)
-    sOutputFolderPath = ActiveWorkbook.Path + "\OutputRange"
+    sOutputFolderPath = ActiveWorkbook.Path + "\ExportRange"
     If FSO.FolderExists(sOutputFolderPath) Then
         FSO.DeleteFolder (sOutputFolderPath)
     End If
@@ -22,7 +22,7 @@ Sub OutputRangeAllSheet()
         sSheetName = TargetSheet.Name   ' 処理対象シート名を取得する
         TargetSheet.Activate            ' 処理対象シートを選択する
         
-        ' 対象に処理実施
+        ' 対象シートの指定範囲を画像出力
         Call OutputRange(sSheetName, "A1:D4")
         
     Next i
@@ -44,7 +44,7 @@ End Sub
 '---------------------------------------------------------------------------
 '  指定範囲を画像ファイルとして出力する (対象シート)
 '---------------------------------------------------------------------------
-Sub OutputRange(ByVal sSheetName As String, ByVal sRange As String)
+Sub ExportRange(ByVal sSheetName As String, ByVal sRange As String)
     
     ' 例外処理
     On Error GoTo Catch
@@ -56,7 +56,7 @@ Sub OutputRange(ByVal sSheetName As String, ByVal sRange As String)
     Worksheets(sSheetName).Range("A1").Select
     
     ' 出力先フォルダが存在しなければエラー終了
-    sOutputFolderPath = ActiveWorkbook.Path + "\OutputRange"
+    sOutputFolderPath = ActiveWorkbook.Path + "\ExporttRange"
     If Dir(sOutputFolderPath, vbDirectory) = "" Then
         Err.Raise Number:=999, Description:="画像出力フォルダが存在しません。事前に作成してください。" & vbNewLine & sOutputFolderPath
     End If
