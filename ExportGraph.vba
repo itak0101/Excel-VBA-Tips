@@ -13,7 +13,7 @@ Sub ExportGraph()
     Application.DisplayAlerts = False
 
     ' 画像出力フォルダが存在しなければ作成する
-    SaveDir = ThisWorkbook.Path & "\\GraphOut_" & Format(Now, "yyyymmdd_hhmmss")
+    SaveDir = ThisWorkbook.Path & "\\ExportGraph" & Format(Now, "yyyymmdd_hhmmss")
     If Dir(SaveDir, vbDirectory) = "" Then
         MkDir SaveDir
     End If
@@ -50,7 +50,7 @@ Sub ExportGraph()
     '1番目のシートにカーソルを合わせる
     Worksheets(1).Activate
     
-    ' 警告メッセージボックスを非表示に設定
+    ' 警告メッセージボックスを表示に設定
     Application.DisplayAlerts = True
     
 End Sub
